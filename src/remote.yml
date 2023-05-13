@@ -14,7 +14,7 @@
     register: user_reachable
     failed_when: false
     changed_when: user_reachable is failed
-  
+
   - name: add remote host to inventory
     add_host:
       name: raspi

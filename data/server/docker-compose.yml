@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  pi-hole:
+    container_name: pi-hole
+    image: pihole/pihole:latest
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 67:67/udp # Only required if you are using Pi-hole as your DHCP server
+      - 80:80/tcp
+    environment:
+      TZ: Europe/Amsterdam
+      WEBPASSWORD: {{ server.pi_hole.password }}
+      FTLCONF_REPLY_ADDR4: {{ ansible_default_ipv4.address }}
+    volumes:
+      - ./etc-pihole:/etc/pihole
+      - ./etc-dnsmasq.d:/etc/dnsmasq.d
+    restart: unless-stopped

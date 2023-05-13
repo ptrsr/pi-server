@@ -1,0 +1,56 @@
+---
+- hosts: raspi
+  gather_facts: no
+  tasks:
+
+  - name: create server directory
+    become: yes
+    file:
+      path: "{{ server.server_dir }}"
+      state: directory
+      owner: "{{ account.username }}"
+      group: "{{ account.username }}"
+      mode: 0755
+
+  - name: synchronize compose file
+    template:
+      src: "{{ host.data_dir }}/server/docker-compose.yml"
+      dest: "{{ server.server_dir }}/docker-compose.yml"
+      owner: "{{ account.username }}"
+      group: "{{ account.username }}"
+      mode: 0644
+
+  - name: start and enable docker daemon
+    become: yes
+    service:
+      name: docker
+      state: started
+      enabled: yes
+    retries: 10
+    delay: 10
+
+  - name: install systemd service
+    become: yes
+    template:
+      src: "{{ host.data_dir }}/server/server.service"
+      dest: /etc/systemd/system/server.service
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: reload systemd
+    become: yes
+    systemd:
+      daemon_reload: yes
+  
+  - name: enable systemd service
+    become: yes
+    systemd:
+      name: server.service
+      enabled: yes
+
+  - name: start systemd service
+    become: yes
+    systemd:
+      name: server.service
+      state: started

@@ -1,0 +1,14 @@
+[Unit]
+Description=Start docker servers
+After=network.target time-sync.target docker.service
+Wants=time-sync.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory=/{{ server.server_dir }}
+ExecStart=/usr/bin/docker-compose up -d --remove-orphans
+ExecStop=/usr/bin/docker-compose down
+
+[Install]
+WantedBy=multi-user.target

@@ -4,3 +4,9 @@
 
 # Setup SSH daemon
 - import_playbook: setup/ssh.yml
+
+# Setup Docker
+- import_playbook: server/docker.yml
+
+# Setup server
+- import_playbook: server/server.yml
