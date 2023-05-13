@@ -1,0 +1,18 @@
+---
+- hosts: local
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: initialize raspi machine
+    docker_container:
+      name: raspi
+      image: ptrsr/pi-ci
+      command: init
+      state: started
+      detach: false
+      tls_hostname: localhost
+      published_ports:
+        - 2222:2222
+      volumes:
+        - "{{ host.dist_dir|default(omit) }}:/dist"

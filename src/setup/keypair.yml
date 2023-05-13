@@ -1,0 +1,47 @@
+---
+- hosts: local
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: check if OpenSSH keypair exists
+    stat:
+      path: "{{ ssh.path }}"
+    register: ssh_key
+    failed_when: ssh_key.stat.exists == false and ssh.generate == false
+
+  - name: create ssh folder
+    file:
+      path: "{{ ssh.path | dirname }}"
+      state: directory
+
+  - name: generate an OpenSSH keypair
+    when: ssh.generate == true and not ssh_key.stat.exists
+    openssh_keypair:
+      mode: 0600
+      path: "{{ ssh.path }}"
+
+- hosts: raspi
+  gather_facts: no
+
+  tasks:
+  - name: create ssh folder
+    file:
+      path: /home/{{ account.username }}/.ssh
+      state: directory
+
+  - name: add public SSH key to new account
+    synchronize:
+      src: "{{ ssh.path }}.pub"
+      dest: /home/{{ account.username }}/.ssh/authorized_keys
+
+  - name: change owner of ssh folder
+    file:
+      path: /home/{{ account.username }}/.ssh
+      state: directory
+      recurse: yes
+      owner: "{{ account.username }}"
+
+  - name: restart SSH daemon
+    become: true
+    shell: systemctl restart sshd

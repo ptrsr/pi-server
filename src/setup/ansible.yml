@@ -1,0 +1,18 @@
+---
+- hosts: raspi
+  gather_facts: no
+
+  tasks:
+  - name: install ansible
+    apt:
+      pkg:
+      - ansible
+      state: present
+      update_cache: yes
+      cache_valid_time: 86400
+    register: result
+    retries: 3
+    until: result is not failed
+
+  - name: install community general collection
+    shell: ansible-galaxy collection install community.general

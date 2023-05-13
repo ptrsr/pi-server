@@ -1,0 +1,26 @@
+all:
+  hosts:
+    local:
+      ansible_host: localhost
+    raspi:
+      ansible_user: root
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+
+
+  vars:
+    host:
+      main_dir: "{{ inventory_dir }}/.."
+      dist_dir: "{{ inventory_dir }}/../dist"
+      data_dir: "{{ inventory_dir }}/../data"
+
+    template:
+      dir: "/root/template"
+
+    ssh:
+      path: "~/.ssh/id_rsa"
+      generate: true
+
+    account:
+      username: test-user
+      # Generated using 'mkpasswd --method=sha-512' command, example is 'test-password'
+      password: $6$scQ3iIF66Udc3$ukCdSpCoUWGOd8yW8l2GTGg0NsdcFSlCQPAGZMo44RhrazS5iOVtNZm7I392RxsyMFUBm5K5biU0Y2SkUcLK.0
