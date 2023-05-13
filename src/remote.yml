@@ -6,7 +6,6 @@
     prompt: Remote host address?
     private: no
 
-
   tasks:
   - name: check if remote host is reachable
     wait_for_connection:
@@ -14,6 +13,11 @@
     register: user_reachable
     failed_when: false
     changed_when: user_reachable is failed
+  
+    - name: set ansible_host
+    set_fact:
+      ansible_host: "{{ ansible_host }}"
+    when: user_reachable is not changed
 
   - name: add remote host to inventory
     add_host:
