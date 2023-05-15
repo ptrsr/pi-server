@@ -14,8 +14,11 @@ services:
       WEBPASSWORD: {{ server.pi_hole.password }}
       FTLCONF_REPLY_ADDR4: {{ ansible_default_ipv4.address }}
     volumes:
-      - ./server/pi-hole:/etc/pihole
-      - ./server/dnsmasq:/etc/dnsmasq.d
+      - ./pi-hole:/etc/pihole
+      - ./dnsmasq:/etc/dnsmasq.d
+    dns:
+      - 127.0.0.1
+      - 8.8.8.8
     restart: unless-stopped
 
   squid:
@@ -24,5 +27,5 @@ services:
     ports:
       - 3128:3128/tcp
     volumes:
-      - ./server/squid/squid.conf:/etc/squid/squid.conf
+      - ./squid/squid.conf:/etc/squid/squid.conf
     restart: unless-stopped

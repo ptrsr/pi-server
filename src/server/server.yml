@@ -11,19 +11,19 @@
       group: "{{ account.username }}"
       mode: 0755
 
-  - name: synchronize compose file
-    template:
-      src: "{{ host.data_dir }}/server/docker-compose.yml"
-      dest: "{{ server.server_dir }}/docker-compose.yml"
+  - name: copy server config
+    become: yes
+    copy:
+      src: "{{ host.data_dir }}/server/"
+      dest: "{{ server.server_dir }}"
       owner: "{{ account.username }}"
       group: "{{ account.username }}"
       mode: 0644
 
-  - name: copy squid config
-    become: yes
-    copy:
-      src: "{{ host.data_dir }}/server/squid.conf"
-      dest: "{{ server.server_dir }}/squid.conf"
+  - name: synchronize compose file
+    template:
+      src: "{{ host.data_dir }}/server/docker-compose.yml"
+      dest: "{{ server.server_dir }}/docker-compose.yml"
       owner: "{{ account.username }}"
       group: "{{ account.username }}"
       mode: 0644
@@ -40,7 +40,7 @@
   - name: install systemd service
     become: yes
     template:
-      src: "{{ host.data_dir }}/server/server.service"
+      src: "{{ host.data_dir }}/server.service"
       dest: /etc/systemd/system/server.service
       owner: root
       group: root
