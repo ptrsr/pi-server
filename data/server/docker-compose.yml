@@ -7,13 +7,22 @@ services:
     ports:
       - 53:53/tcp
       - 53:53/udp
-      - 67:67/udp # Only required if you are using Pi-hole as your DHCP server
+      - 67:67/udp # Only required if used as DHCP server
       - 80:80/tcp
     environment:
       TZ: Europe/Amsterdam
       WEBPASSWORD: {{ server.pi_hole.password }}
       FTLCONF_REPLY_ADDR4: {{ ansible_default_ipv4.address }}
     volumes:
-      - ./etc-pihole:/etc/pihole
-      - ./etc-dnsmasq.d:/etc/dnsmasq.d
+      - ./server/pi-hole:/etc/pihole
+      - ./server/dnsmasq:/etc/dnsmasq.d
+    restart: unless-stopped
+
+  squid:
+    container_name: squid
+    image: ubuntu/squid:latest
+    ports:
+      - 3128:3128/tcp
+    volumes:
+      - ./server/squid/squid.conf:/etc/squid/squid.conf
     restart: unless-stopped

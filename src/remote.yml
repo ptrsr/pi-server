@@ -14,7 +14,7 @@
     failed_when: false
     changed_when: user_reachable is failed
   
-    - name: set ansible_host
+  - name: set ansible_host
     set_fact:
       ansible_host: "{{ ansible_host }}"
     when: user_reachable is not changed

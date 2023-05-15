@@ -12,3 +12,4 @@
       recursive: true
       rsync_opts:
         - "--exclude=dist"
+ 

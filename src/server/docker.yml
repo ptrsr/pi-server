@@ -1,6 +1,5 @@
 ---
 - hosts: raspi
-  gather_facts: no
   tasks:
   - name: install prerequisites for Docker repository
     become: yes
